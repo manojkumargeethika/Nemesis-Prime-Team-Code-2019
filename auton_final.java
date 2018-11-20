@@ -20,9 +20,9 @@ import java.util.List;
 public class auton_final extends LinearOpMode {
 
 
-    public void coolmethod(){
+    /*public void coolmethod(){
         telemetry.addData("nick walls is hecca stupid" , null);
-    }
+    }*/
 
 
     static double i_position = 1.0; //initial position for drop servo
