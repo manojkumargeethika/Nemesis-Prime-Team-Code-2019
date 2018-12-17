@@ -62,7 +62,7 @@ public class auton_final extends LinearOpMode {
         //SAMPLING
         motorLeft = hardwareMap.dcMotor.get("motorLeft");
         motorRight = hardwareMap.dcMotor.get("motorRight");
-        coolmethod();
+        //coolmethod();
         initVuforia();
 
         motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

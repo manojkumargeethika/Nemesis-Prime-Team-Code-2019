@@ -88,13 +88,14 @@ public class elevator_opmode_edition extends LinearOpMode {
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
         elevatorDrive = hardwareMap.get(DcMotor.class, "elevator_drive");
-
+        digitalTouch = hardwareMap.get(DigitalChannel.class, "sensor_digital");         
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
         elevatorDrive.setDirection(DcMotor.Direction.FORWARD);
+        digitalTouch.setMode(DigitalChannel.Mode.INPUT);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");
@@ -134,6 +135,8 @@ public class elevator_opmode_edition extends LinearOpMode {
             boolean elevatormoveUP = gamepad2.a;
             boolean elevatormoveDOWN = gamepad2.b;
             boolean elevatorSTOP = gamepad2.x;
+            float elevatorUP_increment = gamepad2.right_trigger;
+            float elevatorDOWN_increment = gamepad2.left_trigger;
 
             leftPower = Range.clip(leftmove, -1.0, 1.0);
             rightPower = Range.clip(rightmove, -1.0, 1.0);
@@ -141,10 +144,17 @@ public class elevator_opmode_edition extends LinearOpMode {
             if (elevatormoveUP) {
                 encoderDrive(5, 4, 2);
             } else if (elevatormoveDOWN) {
-                //make elevator move down
+                encoderDrive(5, -4, 2);
             } else if (elevatorSTOP) {
                 elevatorDrive.setPower(0);
-            } else telemetry.addData("what did you do xD", null);
+            } else if (elevatorUP_increment >= 0.2){
+                elevatorDrive.setPower(5);
+            }else if(elevatorDOWN_increment >= 0.2) {
+                elevatorDrive.setPower(-5);
+            } else{
+               telemetry.addData("Hi, I'm a debug message!" , null);
+            }
+
 
             // Send calculated power to wheels
             leftDrive.setPower(leftPower);
@@ -154,9 +164,7 @@ public class elevator_opmode_edition extends LinearOpMode {
         }
     }
 
-    public void encoderDrive(double speed,
-                             double Inches,
-                             double timeoutS) {
+    public void encoderDrive(double speed, double inches, double timeoutS) {
         int newTarget;
 
 
@@ -164,7 +172,7 @@ public class elevator_opmode_edition extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newTarget = elevatorDrive.getCurrentPosition() + (int) (Inches * COUNTS_PER_INCH);
+            newTarget = elevatorDrive.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
             elevatorDrive.setTargetPosition(newTarget);
 
 
@@ -185,7 +193,9 @@ public class elevator_opmode_edition extends LinearOpMode {
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     (leftDrive.isBusy() && rightDrive.isBusy())) {
-
+                        if(digitalTouch.getState()){
+                            elevatorDrive.setPower(0);
+                        }
             }
                 // Stop all motion;
                 elevatorDrive.setPower(0);

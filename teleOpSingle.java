@@ -1,17 +1,13 @@
 package org.firstinspires.ftc.teamcode;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-@TeleOp(name="roverRuckusTeleop", group="Linear Opmode")
-public class teleOpFinal extends LinearOpMode {
+
+@TeleOp(name="roverRuckusTeleopSingle", group="Linear Opmode")
+public class teleOpSingle extends LinearOpMode {
     public org.firstinspires.ftc.teamcode.subsystems.driveTrain dTrain = new org.firstinspires.ftc.teamcode.subsystems.driveTrain();
     public org.firstinspires.ftc.teamcode.subsystems.intake intake = new org.firstinspires.ftc.teamcode.subsystems.intake();
     private DcMotor leftDrive;
@@ -32,7 +28,7 @@ public class teleOpFinal extends LinearOpMode {
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
         elevatorDrive = hardwareMap.get(DcMotor.class, "elevator_drive");
         servo = hardwareMap.get(Servo.class, "servo");
-      //digitalTouch = hardwareMap.get(DigitalChannel.class, "sensor_digital");
+      //  digitalTouch = hardwareMap.get(DigitalChannel.class, "sensor_digital");
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
         elevatorDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -49,14 +45,14 @@ public class teleOpFinal extends LinearOpMode {
             } else {
                 speedlimiter = 0.5;
             }
-            if (gamepad2.a) {
+            if (gamepad1.a) {
                 elevatorDrive.setPower(1);
-            } else if (gamepad2.b) {
+            } else if (gamepad1.b) {
                 elevatorDrive.setPower(-1);
             } else {
                 elevatorDrive.setPower(0);
             }
-            teleopInput(-gamepad1.left_stick_y,-gamepad1.right_stick_x,speedlimiter, leftDrive, rightDrive);
+            teleopInput(gamepad1.left_stick_y,gamepad1.right_stick_x,speedlimiter, leftDrive, rightDrive);
             telemetry.addData("elevatorPosition %7d", elevatorDrive.getCurrentPosition());
             telemetry.addData("servoPosition %7d", servo.getPosition());
             telemetry.update();
